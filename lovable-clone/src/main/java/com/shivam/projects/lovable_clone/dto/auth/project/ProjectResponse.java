@@ -1,0 +1,8 @@
+package com.shivam.projects.lovable_clone.dto.auth.project;
+
+import com.shivam.projects.lovable_clone.dto.auth.UserProfileResponse;
+
+import java.time.Instant;
+
+public record ProjectResponse(Long id, String name, Instant createdAt, Instant updatedAt, UserProfileResponse user) {
+}
