@@ -4,7 +4,9 @@ import com.shivam.projects.lovable_clone.dto.auth.project.ProjectRequest;
 import com.shivam.projects.lovable_clone.dto.auth.project.ProjectResponse;
 import com.shivam.projects.lovable_clone.dto.auth.project.ProjectSummaryResponse;
 import com.shivam.projects.lovable_clone.service.ProjectService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +16,10 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/projects")
+@FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
 public class ProjectController {
 
-    private final ProjectService projectService;
+      ProjectService projectService;
 
     @GetMapping
     public ResponseEntity<List<ProjectSummaryResponse>> getMyProjects(){

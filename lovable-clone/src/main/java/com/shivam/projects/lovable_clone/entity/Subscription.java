@@ -12,7 +12,6 @@ import java.time.Instant;
 
 @Getter
 @Setter
-@Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Subscription {
 

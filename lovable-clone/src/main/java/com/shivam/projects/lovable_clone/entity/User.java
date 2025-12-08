@@ -1,28 +1,33 @@
 package com.shivam.projects.lovable_clone.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigInteger;
 import java.time.Instant;
 
 @Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
+//@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Table(name = "users")
 public class User {
-     @Id
-     BigInteger id;
+
+     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+     Long id;
+
      String passwordHash;
      String email;
      String name;
      String avatarUrl;
+     @CreationTimestamp
      Instant createdAt;
+     @UpdateTimestamp
      Instant updatedAt;
      Instant deletedAt;  //soft delete
 }

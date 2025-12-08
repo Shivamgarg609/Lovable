@@ -4,5 +4,5 @@ import com.shivam.projects.lovable_clone.enumm.ProjectRole;
 
 import java.time.Instant;
 
-public record MemberResponse(Long id, String name, String email, String avatarUrl, ProjectRole projectRole, Instant invitedAt) {
+public record MemberResponse(Long userId, String name, String email, ProjectRole projectRole, Instant invitedAt) {
 }

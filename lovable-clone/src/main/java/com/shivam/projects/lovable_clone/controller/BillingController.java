@@ -3,7 +3,10 @@ package com.shivam.projects.lovable_clone.controller;
 import com.shivam.projects.lovable_clone.dto.auth.subscription.*;
 import com.shivam.projects.lovable_clone.service.PlanService;
 import com.shivam.projects.lovable_clone.service.SubscriptionService;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +19,11 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class BillingController {
 
-    private final SubscriptionService subscriptionService;
-    private final PlanService planService;
+      SubscriptionService subscriptionService;
+      PlanService planService;
 
     @GetMapping("/api/response")
     public ResponseEntity<List<PlanResponse>> getAllPlans(){

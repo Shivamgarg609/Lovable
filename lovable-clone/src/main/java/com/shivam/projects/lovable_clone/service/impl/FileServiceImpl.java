@@ -1,0 +1,20 @@
+package com.shivam.projects.lovable_clone.service.impl;
+
+import com.shivam.projects.lovable_clone.dto.auth.project.FileContentResponse;
+import com.shivam.projects.lovable_clone.dto.auth.project.FileNode;
+import com.shivam.projects.lovable_clone.service.FileService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+@Service
+public class FileServiceImpl implements FileService {
+    @Override
+    public List<FileNode> getFileTree(Long projectId, Long userId) {
+        return null;
+    }
+
+    @Override
+    public FileContentResponse getFileContent(Long projectId, String path, Long userId) {
+        return null;
+    }
+}
