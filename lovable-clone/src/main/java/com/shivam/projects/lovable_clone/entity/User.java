@@ -21,13 +21,15 @@ public class User {
      @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
      Long id;
 
-     String passwordHash;
-     String email;
+     String password;
+     String username;
      String name;
-     String avatarUrl;
+
      @CreationTimestamp
      Instant createdAt;
+
      @UpdateTimestamp
      Instant updatedAt;
+
      Instant deletedAt;  //soft delete
 }
