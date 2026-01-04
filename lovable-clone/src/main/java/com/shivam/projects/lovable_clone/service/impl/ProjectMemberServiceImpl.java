@@ -11,10 +11,12 @@ import com.shivam.projects.lovable_clone.entity.User;
 import com.shivam.projects.lovable_clone.repository.ProjectMemberRepository;
 import com.shivam.projects.lovable_clone.repository.ProjectRepository;
 import com.shivam.projects.lovable_clone.repository.UserRepository;
+import com.shivam.projects.lovable_clone.security.AuthUtil;
 import com.shivam.projects.lovable_clone.service.ProjectMemberService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,9 +33,12 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     ProjectMemberRepository projectMemberRepository;
     ProjectMemberMapper projectMemberMapper;
     UserRepository userRepository;
+    AuthUtil authUtil;
     @Override
-    public List<MemberResponse> getProjectMembers(Long projectId, Long userId) {
-       Project project = getAccessibleProject(projectId,userId);
+    @PreAuthorize("@security.canViewMembers(#projectId)")
+    public List<MemberResponse> getProjectMembers(Long projectId) {
+        Long userId = authUtil.getCurrentUserId();
+       Project project = getAccessibleProject(projectId);
        return projectMemberRepository.findByIdProjectId(projectId)
                .stream()
                .map(projectMemberMapper::toProjectMemberResponseFromMember)
@@ -41,8 +46,10 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public MemberResponse inviteMember(Long projectId, InviteMemberRequest request, Long userId) {
-        Project project = getAccessibleProject(projectId,userId);
+    @PreAuthorize("@security.canManageMembers(#projectId)")
+    public MemberResponse inviteMember(Long projectId, InviteMemberRequest request) {
+        Long userId = authUtil.getCurrentUserId();
+        Project project = getAccessibleProject(projectId);
 
         User invitee = userRepository.findByUsername(request.username()).orElseThrow();
 
@@ -64,8 +71,10 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public MemberResponse updateMember(Long projectId, Long memberId, UpdateMemberRoleRequest inviteMemberRequest,Long userId) {
-        Project project = getAccessibleProject(projectId,userId);
+    @PreAuthorize("@security.canManageMembers(#projectId)")
+    public MemberResponse updateMember(Long projectId, Long memberId, UpdateMemberRoleRequest inviteMemberRequest) {
+        Long userId = authUtil.getCurrentUserId();
+        Project project = getAccessibleProject(projectId);
 
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId,memberId);
         ProjectMember projectMember = projectMemberRepository.findById(projectMemberId).orElseThrow();
@@ -76,8 +85,10 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public void removeProjectMember(Long projectId, Long memberId, Long userId) {
-        Project project = getAccessibleProject(projectId,userId);
+    @PreAuthorize("@security.canManageMembers(#projectId)")
+    public void removeProjectMember(Long projectId, Long memberId) {
+        Long userId = authUtil.getCurrentUserId();
+        Project project = getAccessibleProject(projectId);
 
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId,memberId);
         if(!projectMemberRepository.existsById(projectMemberId)) throw new RuntimeException("Cannot invite again");
@@ -85,7 +96,8 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         projectMemberRepository.deleteById(projectMemberId);
     }
 
-    public Project getAccessibleProject(Long projectId, Long userId){
+    public Project getAccessibleProject(Long projectId){
+        Long userId = authUtil.getCurrentUserId();
       Project project =  projectRepository.findAccessibleProjectById(projectId,userId).orElseThrow();
       return project;
     }

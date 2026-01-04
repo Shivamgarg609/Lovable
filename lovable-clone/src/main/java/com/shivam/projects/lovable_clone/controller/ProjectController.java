@@ -3,6 +3,7 @@ package com.shivam.projects.lovable_clone.controller;
 import com.shivam.projects.lovable_clone.dto.auth.project.ProjectRequest;
 import com.shivam.projects.lovable_clone.dto.auth.project.ProjectResponse;
 import com.shivam.projects.lovable_clone.dto.auth.project.ProjectSummaryResponse;
+import com.shivam.projects.lovable_clone.security.AuthUtil;
 import com.shivam.projects.lovable_clone.service.ProjectService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -21,37 +22,38 @@ import java.util.List;
 public class ProjectController {
 
       ProjectService projectService;
+//      AuthUtil authUtil;
 
     @GetMapping
     public ResponseEntity<List<ProjectSummaryResponse>> getMyProjects(){
-        Long userId =1L;
+ //       Long userId = authUtil.getCurrentUserId();
 
-        return ResponseEntity.ok(projectService.getUserProjects(userId));
+        return ResponseEntity.ok(projectService.getUserProjects());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProjectResponse> getProjectById(@PathVariable Long id){
 
         Long userId = 1L;
-        return ResponseEntity.ok(projectService.getUserProjectById(id,userId));
+        return ResponseEntity.ok(projectService.getUserProjectById(id));
     }
 
     @PostMapping
     public ResponseEntity<ProjectResponse> createProject(@RequestBody @Valid ProjectRequest projectRequest){
         Long userId = 1L;
-        return ResponseEntity.status(HttpStatus.CREATED).body(projectService.createProject(projectRequest,userId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(projectService.createProject(projectRequest));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ProjectResponse> updateProject(@PathVariable Long id, @RequestBody @Valid ProjectRequest projectRequest){
         Long userId = 1L;
-        return ResponseEntity.ok(projectService.updateProject(id,projectRequest,userId));
+        return ResponseEntity.ok(projectService.updateProject(id,projectRequest));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProject(@PathVariable Long id){
         Long userId = 1L;
-        projectService.softDelete(id,userId);
+        projectService.softDelete(id);
         return ResponseEntity.noContent().build();
     }
 }

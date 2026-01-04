@@ -8,11 +8,11 @@ import com.shivam.projects.lovable_clone.entity.ProjectMember;
 import java.util.List;
 
 public interface ProjectMemberService {
-    List<MemberResponse> getProjectMembers(Long projectId, Long userId);
+    List<MemberResponse> getProjectMembers(Long projectId);
 
-    MemberResponse inviteMember(Long projectId, InviteMemberRequest request, Long userId);
+    MemberResponse inviteMember(Long projectId, InviteMemberRequest request);
 
-    MemberResponse updateMember(Long projectId, Long memberId, UpdateMemberRoleRequest inviteMemberRequest,Long userId);
+    MemberResponse updateMember(Long projectId, Long memberId, UpdateMemberRoleRequest inviteMemberRequest);
 
-    void removeProjectMember(Long projectId, Long memberId, Long userId);
+    void removeProjectMember(Long projectId, Long memberId);
 }
