@@ -1,7 +1,6 @@
 package com.shivam.projects.lovable_clone.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,15 +14,15 @@ import java.time.Instant;
 public class Plan {
 
     @Id
-    long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
     String name;
+    @Column(unique = true)
     String stripePriceId;
     Integer maxProjects;
     Integer maxTokensPerDay;
     Integer maxPreviews;
     Boolean unlimitedAi;
     Boolean active;
-    Instant createdAt;
-    Instant updatedAt;
 }

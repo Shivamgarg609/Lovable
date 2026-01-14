@@ -25,9 +25,6 @@ public class Project {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "owner_id", nullable = false)
-//    User owner;
 
     @Column(nullable = false)
      String name;

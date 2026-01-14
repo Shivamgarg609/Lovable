@@ -9,12 +9,14 @@ import com.shivam.projects.lovable_clone.entity.ProjectMember;
 import com.shivam.projects.lovable_clone.entity.ProjectMemberId;
 import com.shivam.projects.lovable_clone.entity.User;
 import com.shivam.projects.lovable_clone.enumm.ProjectRole;
+import com.shivam.projects.lovable_clone.error.BadRequestException;
 import com.shivam.projects.lovable_clone.error.ResourceNotFoundException;
 import com.shivam.projects.lovable_clone.repository.ProjectMemberRepository;
 import com.shivam.projects.lovable_clone.repository.ProjectRepository;
 import com.shivam.projects.lovable_clone.repository.UserRepository;
 import com.shivam.projects.lovable_clone.security.AuthUtil;
 import com.shivam.projects.lovable_clone.service.ProjectService;
+import com.shivam.projects.lovable_clone.service.SubscriptionService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -36,11 +38,18 @@ public class ProjectServiceImpl implements ProjectService {
     UserRepository userRepository;
     ProjectMapper projectMapper;
     AuthUtil authUtil;
+    SubscriptionService subscriptionService;
     @Override
     public ProjectResponse createProject(ProjectRequest projectRequest) {
+
+        if(subscriptionService.canCreateNewProject()){
+            throw new BadRequestException("User cannot create a new Project with current plan. Upgrade plan now");
+        }
         Long userId = authUtil.getCurrentUserId();
        // User owner = userRepository.findById(authUtil.getCurrentUserId()).orElseThrow(() -> new ResourceNotFoundException("User",userId.toString()));
       User owner = userRepository.getReferenceById(userId);
+
+
         Project project = Project.builder().name(projectRequest.name()).isPublic(false).build();
         project = projectRepository.save(project);
         ProjectMemberId projectMemberId = new ProjectMemberId(project.getId(),owner.getId());

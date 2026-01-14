@@ -1,14 +1,22 @@
 package com.shivam.projects.lovable_clone.service;
 
-import com.shivam.projects.lovable_clone.dto.auth.subscription.CheckoutRequest;
-import com.shivam.projects.lovable_clone.dto.auth.subscription.CheckoutResponse;
-import com.shivam.projects.lovable_clone.dto.auth.subscription.PortalResponse;
+import com.shivam.projects.lovable_clone.SubscriptionStatus;
 import com.shivam.projects.lovable_clone.dto.auth.subscription.SubscriptionResponse;
 
+import java.time.Instant;
+
 public interface SubscriptionService {
-    SubscriptionResponse getCurrentSubscription(Long userId);
+    SubscriptionResponse getCurrentSubscription();
 
-    CheckoutResponse createCheckOutSessionUrl(CheckoutRequest checkoutRequest, Long userId);
+    void activateSubscription(Long userId, Long planId, String subscriptionId, String customerId);
 
-    PortalResponse openCustomerPortal(Long userId);
+    void updateSubscription(String gatewaySubscriptionId, SubscriptionStatus status, Instant periodStart, Instant periodEnd, Boolean cancelAtPeriodEnd, Long planId);
+
+    void cancelSubscription(String gatewaySubscriptionId);
+
+    void renewSubscriptionPeriod(String subId, Instant periodStart, Instant periodEnd);
+
+    void markSubscriptionPastDue(String subId);
+
+    boolean canCreateNewProject();
 }
