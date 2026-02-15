@@ -16,12 +16,12 @@ public class Preview {
 
     Project project;
 
-    String nameSpacce;
+    String namespace;
     String podName;
     String previewUrl;
     Instant createdAt;
     Instant startedAt;
     Instant terminatedAt;
 
-    PreviewStatus previewStatus;
+    PreviewStatus status;
 }

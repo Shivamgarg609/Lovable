@@ -63,7 +63,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
                 .id(projectMemberId)
                 .project(project)
                 .user(invitee)
-                .projectRole(request.projectRole())
+                .projectRole(request.role())
                 .invitedAt(Instant.now())
                 .build();
 
@@ -79,7 +79,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId,memberId);
         ProjectMember projectMember = projectMemberRepository.findById(projectMemberId).orElseThrow();
 
-        projectMember.setProjectRole(inviteMemberRequest.projectRole());
+        projectMember.setProjectRole(inviteMemberRequest.role());
         projectMemberRepository.save(projectMember);
         return projectMemberMapper.toProjectMemberResponseFromMember(projectMember);
     }

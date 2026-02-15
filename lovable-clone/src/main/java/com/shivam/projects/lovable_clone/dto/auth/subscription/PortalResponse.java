@@ -1,4 +1,4 @@
 package com.shivam.projects.lovable_clone.dto.auth.subscription;
 
-public record PortalResponse(String url) {
+public record PortalResponse(String portalUrl) {
 }

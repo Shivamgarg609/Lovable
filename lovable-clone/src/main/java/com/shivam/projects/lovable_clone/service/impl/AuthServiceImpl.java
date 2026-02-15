@@ -26,6 +26,7 @@ public class AuthServiceImpl implements AuthService {
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+
     AuthenticationManager authenticationManager;
 
     AuthUtil authUtil;
@@ -39,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(signupRequest.password()));
         user = userRepository.save(user);
         String token = authUtil.generateAccessToken(user);
-        return new AuthResponse(token,userMapper.userProfileResponse(user));
+        return new AuthResponse(token,userMapper.toUserProfileResponse(user));
     }
 
     @Override
@@ -49,6 +50,6 @@ public class AuthServiceImpl implements AuthService {
 
         User user = (User) authentication.getPrincipal();
         String token = authUtil.generateAccessToken(user);
-        return new AuthResponse(token,userMapper.userProfileResponse(user));
+        return new AuthResponse(token,userMapper.toUserProfileResponse(user));
     }
 }

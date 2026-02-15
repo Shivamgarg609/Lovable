@@ -4,7 +4,6 @@ import com.shivam.projects.lovable_clone.dto.auth.subscription.PlanLimitsRespons
 import com.shivam.projects.lovable_clone.dto.auth.subscription.UsageTodayResponse;
 
 public interface UsageService {
-    UsageTodayResponse getTodayUsageOfUser(Long userId);
-
-    PlanLimitsResponse getPlanLimitsOfUser(Long userId);
+    void recordTokenUsage(Long userId, int actualTokens);
+    void checkDailyTokensUsage();
 }

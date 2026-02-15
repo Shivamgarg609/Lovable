@@ -1,13 +1,8 @@
 package com.shivam.projects.lovable_clone.service.impl;
 
 import com.shivam.projects.lovable_clone.Mapper.ProjectMapper;
-import com.shivam.projects.lovable_clone.dto.auth.project.ProjectRequest;
-import com.shivam.projects.lovable_clone.dto.auth.project.ProjectResponse;
-import com.shivam.projects.lovable_clone.dto.auth.project.ProjectSummaryResponse;
-import com.shivam.projects.lovable_clone.entity.Project;
-import com.shivam.projects.lovable_clone.entity.ProjectMember;
-import com.shivam.projects.lovable_clone.entity.ProjectMemberId;
-import com.shivam.projects.lovable_clone.entity.User;
+import com.shivam.projects.lovable_clone.dto.auth.project.*;
+import com.shivam.projects.lovable_clone.entity.*;
 import com.shivam.projects.lovable_clone.enumm.ProjectRole;
 import com.shivam.projects.lovable_clone.error.BadRequestException;
 import com.shivam.projects.lovable_clone.error.ResourceNotFoundException;
@@ -16,6 +11,7 @@ import com.shivam.projects.lovable_clone.repository.ProjectRepository;
 import com.shivam.projects.lovable_clone.repository.UserRepository;
 import com.shivam.projects.lovable_clone.security.AuthUtil;
 import com.shivam.projects.lovable_clone.service.ProjectService;
+import com.shivam.projects.lovable_clone.service.ProjectTemplateService;
 import com.shivam.projects.lovable_clone.service.SubscriptionService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +35,7 @@ public class ProjectServiceImpl implements ProjectService {
     ProjectMapper projectMapper;
     AuthUtil authUtil;
     SubscriptionService subscriptionService;
+    ProjectTemplateService projectTemplateService;
     @Override
     public ProjectResponse createProject(ProjectRequest projectRequest) {
 
@@ -46,8 +43,7 @@ public class ProjectServiceImpl implements ProjectService {
             throw new BadRequestException("User cannot create a new Project with current plan. Upgrade plan now");
         }
         Long userId = authUtil.getCurrentUserId();
-       // User owner = userRepository.findById(authUtil.getCurrentUserId()).orElseThrow(() -> new ResourceNotFoundException("User",userId.toString()));
-      User owner = userRepository.getReferenceById(userId);
+        User owner = userRepository.getReferenceById(userId);
 
 
         Project project = Project.builder().name(projectRequest.name()).isPublic(false).build();
@@ -62,22 +58,26 @@ public class ProjectServiceImpl implements ProjectService {
                 .project(project)
                 .build();
         projectMemberRepository.save(projectMember);
-
+        projectTemplateService.initializeProjectFromTemplate(project.getId());
         return projectMapper.toProjectResponse(project);
     }
     @Override
     public List<ProjectSummaryResponse> getUserProjects() {
         Long userId = authUtil.getCurrentUserId();
-        var projects = projectRepository.findAllAccessibleByUser(userId);
-        return projectMapper.toListOfProjectSummaryResponse(projects);
+        var projectsWithRoles = projectRepository.findAllAccessibleByUser(userId);
+        return projectsWithRoles.stream()
+                .map(p -> projectMapper.toProjectSummaryResponse(p.getProject(), p.getRole()))
+                .toList();
     }
     @Override
     @PreAuthorize("@security.canViewProject(#projectId)")
-    public ProjectResponse getUserProjectById(Long projectId) {
+    public ProjectSummaryResponse getUserProjectById(Long projectId) {
         Long userId = authUtil.getCurrentUserId();
-        Project project = projectRepository.findAccessibleProjectById(projectId,userId)
-                                       .orElseThrow(() -> new ResourceNotFoundException("Project",projectId.toString()));
-        return projectMapper.toProjectResponse(project);
+
+        var projectWithRole = projectRepository.findAccessibleProjectByIdWithRole(projectId, userId)
+                .orElseThrow(() -> new BadRequestException("Project Not Found"));
+
+        return projectMapper.toProjectSummaryResponse(projectWithRole.getProject(), projectWithRole.getRole());
     }
     @Override
     @PreAuthorize("@security.canEditProject(#projectId)")

@@ -23,10 +23,10 @@ public class AuthUtil {
 
     public String generateAccessToken(User user){
         return Jwts.builder()
-                .setSubject(user.getName())
+                .subject(user.getName())
                 .claim("userId", user.getId().toString())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*10))
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000*60*10))
                 .signWith(getSecretKey())
                 .compact();
     }

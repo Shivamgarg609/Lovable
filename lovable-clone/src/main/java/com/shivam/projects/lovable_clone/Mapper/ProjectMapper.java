@@ -3,6 +3,7 @@ package com.shivam.projects.lovable_clone.Mapper;
 import com.shivam.projects.lovable_clone.dto.auth.project.ProjectResponse;
 import com.shivam.projects.lovable_clone.dto.auth.project.ProjectSummaryResponse;
 import com.shivam.projects.lovable_clone.entity.Project;
+import com.shivam.projects.lovable_clone.enumm.ProjectRole;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -12,8 +13,7 @@ import java.util.List;
 public interface ProjectMapper {
 
     ProjectResponse toProjectResponse(Project project);
-    @Mapping(target = "projectName", source = "name")
-    ProjectSummaryResponse toProjectSummaryResponse(Project project);
+    ProjectSummaryResponse toProjectSummaryResponse(Project project, ProjectRole role);
 
     List<ProjectSummaryResponse> toListOfProjectSummaryResponse(List<Project> projects);
 }

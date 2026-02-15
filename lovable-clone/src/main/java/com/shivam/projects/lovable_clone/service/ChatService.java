@@ -1,0 +1,10 @@
+package com.shivam.projects.lovable_clone.service;
+
+import com.shivam.projects.lovable_clone.dto.auth.chat.ChatResponse;
+
+import java.util.List;
+
+public interface ChatService {
+
+    List<ChatResponse> getProjectChatHistory(Long projectId);
+}
